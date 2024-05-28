@@ -61,9 +61,9 @@ void setup() {
 }
 //***********
 void loop() {
-  //check if there's a connection to Wi-Fi or not
+  //kiem tra wifi co ket noi khong
   if(!WiFi.isConnected()){
-    connectToWiFi();    //Retry to connect to Wi-Fi
+    connectToWiFi();    
   }
   //------------------------
   if (millis() - previousMillis >= 15000) {
@@ -73,7 +73,7 @@ void loop() {
   delay(50);
   //------------------
   if ( ! mfrc522.PICC_IsNewCardPresent()) {
-    return;//got to start of loop if there is no card present
+    return;
   }
   if ( ! mfrc522.PICC_ReadCardSerial()) {
     return;//if read card serial(0) returns 1, the uid struct contians the ID of the read card.
@@ -119,7 +119,7 @@ void SendCardID( String Card_uid ){
     getData = "?card_uid=" + String(Card_uid) + "&device_token=" + String(device_token); // Add the Card ID to the GET array in order to send it
     //GET methode
     Link = URL + getData;
-    http.begin(wifiClient,Link); //initiate HTTP request   //Specify content-type header
+    http.begin(wifiClient,Link); //initiate HTTP request   
     
     int httpCode = http.GET();   //Send the request
     String payload = http.getString();    //Get the response payload
