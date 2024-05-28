@@ -1,5 +1,5 @@
-#include <Wire.h> // Include Wire library for I2C
-#include <LiquidCrystal_I2C.h> // Include the LiquidCrystal I2C library
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h> 
 #include <Arduino.h>
 #include "AudioFileSourcePROGMEM.h"
 #include "AudioGeneratorWAV.h"
@@ -13,14 +13,13 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 WiFiClient wifiClient;
-//************************************************************************
+//***********************
 #define SS_PIN  D2  //D2
 #define RST_PIN D1  //D1
 #define BUZZER_PIN D4
 
 MFRC522 mfrc522(SS_PIN, RST_PIN); 
 //-------------------------
-/* Set these to your desired credentials. */
 const char *ssid = "vietlot";
 const char *password = "0995363571";
 const char* device_token  = "69c19b1f363cce81";
@@ -33,8 +32,8 @@ unsigned long previousMillis = 0;
 //-----------
 LiquidCrystal_I2C lcd(0x27,16,2);
 
-Servo myservo; // Create a servo object
-int pos = 0;   // Variable to store the servo position
+Servo myservo; 
+int pos = 0; //servo position   
 //----------
 AudioGeneratorWAV *wav;
 AudioFileSourcePROGMEM *file;
@@ -60,24 +59,22 @@ void setup() {
   lcd.backlight();
 
 }
-//************************************************************************
+//***********
 void loop() {
   //check if there's a connection to Wi-Fi or not
   if(!WiFi.isConnected()){
     connectToWiFi();    //Retry to connect to Wi-Fi
   }
-  //---------------------------------------------
+  //------------------------
   if (millis() - previousMillis >= 15000) {
     previousMillis = millis();
     OldCardID="";
   }
   delay(50);
-  //---------------------------------------------
-  //look for new card
+  //------------------
   if ( ! mfrc522.PICC_IsNewCardPresent()) {
     return;//got to start of loop if there is no card present
   }
-  // Select one of the cards
   if ( ! mfrc522.PICC_ReadCardSerial()) {
     return;//if read card serial(0) returns 1, the uid struct contians the ID of the read card.
   }
@@ -92,8 +89,8 @@ void loop() {
   else{
     OldCardID = CardID;
   }
-  //---------------------------------------------
-//  Serial.println(CardID);
+  
+ Serial.println(CardID);
 playBuzzer();
   SendCardID(CardID);
   if(checkRegisteredCard(CardID)) { // Check if the card is registered
@@ -113,7 +110,7 @@ playBuzzer();
   }
 }
 
-//************send the Card UID to the website*************
+//sendCard UID to the website
 void SendCardID( String Card_uid ){
   Serial.println("Sending the Card ID");
   if(WiFi.isConnected()){
@@ -190,7 +187,7 @@ bool checkRegisteredCard(String Card_uid) {
   }
 }
 
-//************Move the Servo*************
+//Move the Servo
 void moveServo() {
   for (pos = 0; pos <= 150; pos += 1) { 
     myservo.write(pos);              
@@ -210,7 +207,7 @@ void playSound() {
   file = new AudioFileSourcePROGMEM(viola, sizeof(viola));
   wav->begin(file, out);
 }
-//********************connect to the WiFi******************
+//connect to WiFi
 void connectToWiFi(){
     WiFi.mode(WIFI_OFF);        //Prevents reconnection issue (taking too long to connect)
     delay(1000);
